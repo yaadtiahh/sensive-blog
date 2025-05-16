@@ -5,7 +5,6 @@ from django.db.models import Count
 
 
 class PostQuerySet(models.QuerySet):
-
     def popular(self):
         most_popular_posts = self.annotate(likes_count=Count('likes')).order_by('-likes_count')
         return most_popular_posts
