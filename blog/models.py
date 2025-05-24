@@ -38,13 +38,13 @@ class Post(models.Model):
     image = models.ImageField('Картинка')
     published_at = models.DateTimeField('Дата и время публикации')
 
-    objects = PostQuerySet.as_manager()
-
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Автор',
-        limit_choices_to={'is_staff': True})
+        limit_choices_to={'is_staff': True},
+        related_name='author_posts'
+    )
     likes = models.ManyToManyField(
         User,
         related_name='liked_posts',
@@ -55,16 +55,18 @@ class Post(models.Model):
         related_name='posts',
         verbose_name='Теги')
 
-    def __str__(self):
-        return self.title
-
-    def get_absolute_url(self):
-        return reverse('post_detail', args={'slug': self.slug})
+    objects = PostQuerySet.as_manager()
 
     class Meta:
         ordering = ['-published_at']
         verbose_name = 'пост'
         verbose_name_plural = 'посты'
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args={'slug': self.slug})
 
 
 class Tag(models.Model):
